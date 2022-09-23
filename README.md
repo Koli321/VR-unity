@@ -42,6 +42,8 @@
 ## Задание 1
 Ход работы:
 1) Для начала я создал проект по шаблону 3D - core
+2) После чего нужно было создать 3 объекта: Plane, Cube и Shpere
+![image](https://user-images.githubusercontent.com/94520383/191991603-c7d730bb-86ef-43c1-9974-2e3c16430b0c.png)
 
 ```py
 

@@ -71,7 +71,7 @@ void Update()
 }
 
 ```
-8) Сделал так, что при столкновении Cube должен менять свой цвет на зелёный, а при завершении столкновения обратно на красный
+8) Сделал так, что при столкновении Cube должен менять свой цвет на синий, а при завершении столкновения обратно на красный
 ```py
 void Update()
     {
@@ -99,70 +99,150 @@ void Update()
 ### Что произойдёт с координатами объекта, если он перестанет быть дочерним?
 ### Создайте три различных примера работы компонента RigidBody?
 Ход работы: 
-
+1) Для начала работы я поменял его состояние из кинематики на использование графитации, а в объекте сфера убрал триггер и сделал те же действия, что и для куба
+![image](https://user-images.githubusercontent.com/94520383/192100416-7578407c-0457-4ede-b8f2-171aa39c4b07.png)
+![image](https://user-images.githubusercontent.com/94520383/192100524-51275d97-f8cf-4f83-8fb4-f6350aa9f6f0.png)
+2) Далее сделал так, чтобы сфера понимала, что падает на куб и меняла цвет
 ```py
+ void Update()
+    {
 
-import ScriptEnv
-ScriptEnv.Initialize("Ansoft.ElectronicsDesktop")
-oDesktop.RestoreWindow()
-oProject = oDesktop.NewProject()
-oProject.Rename("C:/Users/denisov.dv/Documents/Ansoft/SphereDIffraction.aedt", True)
-oProject.InsertDesign("HFSS", "HFSSDesign1", "HFSS Terminal Network", "")
-oDesign = oProject.SetActiveDesign("HFSSDesign1")
-oEditor = oDesign.SetActiveEditor("3D Modeler")
-oEditor.CreateSphere(
-	[
-		"NAME:SphereParameters",
-		"XCenter:="		, "0mm",
-		"YCenter:="		, "0mm",
-		"ZCenter:="		, "0mm",
-		"Radius:="		, "1.0770329614269mm"
-	], 
-)
-![Максимцов](https://user-images.githubusercontent.com/94520383/191990540-cbeb500a-d545-4d59-bac7-ec9f4de3e5a9.jpg)
+    }
 
+    private void OnCollisionEnter(Collision other)
+    {
+        other.gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.blue);
+    }
+
+    private void OnCollisionExit(Collision other)
+    {
+        other.gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
+
+    }
+}
 ```
+3) После я прописал, чтобы пол не меняел цвет, после того как на него падает сфера
+```py
+  void Update()
+    {
 
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.name == "Cube")
+        {
+            other.gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.blue);
+        }
+    }
+
+    private void OnCollisionExit(Collision other)
+    {
+        if (other.gameObject.name == "Cube")
+        {
+            other.gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
+        }
+
+    }
+}
+```
+4) Далее я прописал, чтобы сфера после столкновения пропадала. Для этого я добавил RigidBody Plane и поставил кинематику, чтобы он не упал 
+![image](https://user-images.githubusercontent.com/94520383/192101206-e6414f2c-7a31-4416-a491-81e7b438cf35.png)
+5) Далее я прописал скрипт, чтобы сфера разрушилась при столкновение с полом
+```py
+   void Update()
+    {
+        
+    }
+
+    private void OnCollisionEnter(Collision other) {
+        if (other.gameObject.name == "Sphere")
+        {
+            Destroy(other.gameObject);
+        }
+    }
+}
+```
 ## Задание 3
-### Какова роль параметра Lr? Ответьте на вопрос, приведите пример выполнения кода, который подтверждает ваш ответ. В качестве эксперимента можете изменить значение параметра.
-
-- Перечисленные в этом туториале действия могут быть выполнены запуском на исполнение скрипт-файла, доступного [в репозитории](https://github.com/Den1sovDm1triy/hfss-scripting/blob/main/ScreatingSphereInAEDT.py).
-- Для запуска скрипт-файла откройте Ansys Electronics Desktop. Перейдите во вкладку [Automation] - [Run Script] - [Выберите файл с именем ScreatingSphereInAEDT.py из репозитория].
-
+### Реализуйте на сцене генерацию n кубиков. Число n вводится пользователем после старта сцены.
+1) Для начала работы я создал объект Point, добавил ему RigidBody и Sphere Collider, чтобы он был одних размером со сферой 
+![image](https://user-images.githubusercontent.com/94520383/192101776-66f290d4-be8a-4bad-952b-e1ec34e41a37.png)
+2) Далее я создал скрипт, для того чтобы сфера могла разлетаться и проверил это на маленьких сферах
 ```py
+public class PointBoom : MonoBehaviour
+{
+    // Start is called before the first frame update
+    public float radius = 0.5f;
 
-import ScriptEnv
-ScriptEnv.Initialize("Ansoft.ElectronicsDesktop")
-oDesktop.RestoreWindow()
-oProject = oDesktop.NewProject()
-oProject.Rename("C:/Users/denisov.dv/Documents/Ansoft/SphereDIffraction.aedt", True)
-oProject.InsertDesign("HFSS", "HFSSDesign1", "HFSS Terminal Network", "")
-oDesign = oProject.SetActiveDesign("HFSSDesign1")
-oEditor = oDesign.SetActiveEditor("3D Modeler")
-oEditor.CreateSphere(
-	[
-		"NAME:SphereParameters",
-		"XCenter:="		, "0mm",
-		"YCenter:="		, "0mm",
-		"ZCenter:="		, "0mm",
-		"Radius:="		, "1.0770329614269mm"
-	], 
-)
+    public float force = 10.0f;
 
+    void Start()
+    {
+        Vector3 boomPosition = transform.position;
+        Collider[] colliders = Physics.OverlapSphere(boomPosition, radius);
+        foreach (Collider hit in colliders)
+        {
+            Rigidbody rb = GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.AddExplosionForce(force, boomPosition, radius, 3.0f);
+            }
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+}
 ```
+![image](https://user-images.githubusercontent.com/94520383/192102623-548221b4-05f6-4ea8-8a02-3d51762a00ab.png)
+3) Далее я прописал уже для разрушения большой сферы и добавил Plane уже созданные прифабы Point и SpawnSphere
+```py
+public class DestroyObject : MonoBehaviour
+{
+    // Start is called before the first frame update
+    public float radius = 0.5f;
+    public float force = 10.0f;
+    public GameObject prefabBoomPoint;
+    public GameObject prefabBoomSphere;
+    void Start()
+    {
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.name == "Sphere")
+        {
+            Destroy(other.gameObject);
+            Vector3 boomPosition = other.gameObject.transform.position;
+            Instantiate(prefabBoomPoint, other.gameObject.transform.position, other.gameObject.transform.rotation);
+            Instantiate(prefabBoomSphere, other.gameObject.transform.position, other.gameObject.transform.rotation);
+            Collider[] colliders = Physics.OverlapSphere(boomPosition, radius);
+            foreach (Collider hit in colliders)
+            {
+                Rigidbody rb = GetComponent<Rigidbody>();
+                if (rb != null)
+                {
+                    rb.AddExplosionForce(force, boomPosition, radius, 3.0f);
+                }
+            }
+        }
+    }
+}
+```
+![image](https://user-images.githubusercontent.com/94520383/192103259-7e4c283b-167a-4462-96a4-aaa15de5d5d3.png)
 
 ## Выводы
-
-Абзац умных слов о том, что было сделано и что было узнано.
-
-| Plugin | README |
-| ------ | ------ |
-| Dropbox | [plugins/dropbox/README.md][PlDb] |
-| GitHub | [plugins/github/README.md][PlGh] |
-| Google Drive | [plugins/googledrive/README.md][PlGd] |
-| OneDrive | [plugins/onedrive/README.md][PlOd] |
-| Medium | [plugins/medium/README.md][PlMe] |
-| Google Analytics | [plugins/googleanalytics/README.md][PlGa] |
+В данной лабораторной работе, я научился, делать фигуры, делать для них анимацию и делать эффект взврыва 
 
 ## Powered by
 

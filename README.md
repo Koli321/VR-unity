@@ -99,147 +99,34 @@ void Update()
 ### Что произойдёт с координатами объекта, если он перестанет быть дочерним?
 ### Создайте три различных примера работы компонента RigidBody?
 Ход работы: 
-1) Для начала работы я поменял его состояние из кинематики на использование графитации, а в объекте сфера убрал триггер и сделал те же действия, что и для куба
-![image](https://user-images.githubusercontent.com/94520383/192100416-7578407c-0457-4ede-b8f2-171aa39c4b07.png)
-![image](https://user-images.githubusercontent.com/94520383/192100524-51275d97-f8cf-4f83-8fb4-f6350aa9f6f0.png)
-2) Далее сделал так, чтобы сфера понимала, что падает на куб и меняла цвет
+1) Координаты доч. объекта берут 0 в родительском. Если перетащить объект и сделать его родительским, то его координаты поменяют числовые значения относительно всей сцены, но объект никак положение не изменит.
+2) Для начала я попробовал поиграться с сопротивлением объекта в RigidBody, после чего он падал то быстрее, то медленнее 
+3) Добавил объекту принятие сил, для хоть какого-то урпавления 
 ```py
- void Update()
+    void Update()
     {
-
-    }
-
-    private void OnCollisionEnter(Collision other)
+        if (Input.GetKeyDown(KeyCode.Space)}
     {
-        other.gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.blue);
-    }
-
-    private void OnCollisionExit(Collision other)
-    {
-        other.gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
-
+        this.rigidbody.AddForce(new Vector3(0f,150f,0f));
     }
 }
 ```
-3) После я прописал, чтобы пол не меняел цвет, после того как на него падает сфера
+4) Также смог добавить скорости
 ```py
-  void Update()
+    void Update()
     {
-
-    }
-
-    private void OnCollisionEnter(Collision other)
+        if (Input.GetKeyDown(KeyCode.Space)}
     {
-        if (other.gameObject.name == "Cube")
-        {
-            other.gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.blue);
-        }
+        this.rigidbody.AddForce(new Vector3(0f,150f,0f));
     }
-
-    private void OnCollisionExit(Collision other)
-    {
-        if (other.gameObject.name == "Cube")
-        {
-            other.gameObject.GetComponent<Renderer>().material.SetColor("_Color", Color.red);
-        }
-
-    }
+    Debug.Log("SpeedY:" + this.rigidbody.velocity.y);
 }
-```
-4) Далее я прописал, чтобы сфера после столкновения пропадала. Для этого я добавил RigidBody Plane и поставил кинематику, чтобы он не упал 
-![image](https://user-images.githubusercontent.com/94520383/192101206-e6414f2c-7a31-4416-a491-81e7b438cf35.png)
-5) Далее я прописал скрипт, чтобы сфера разрушилась при столкновение с полом
-```py
-   void Update()
-    {
-        
-    }
 
-    private void OnCollisionEnter(Collision other) {
-        if (other.gameObject.name == "Sphere")
-        {
-            Destroy(other.gameObject);
-        }
-    }
-}
 ```
 ## Задание 3
 ### Реализуйте на сцене генерацию n кубиков. Число n вводится пользователем после старта сцены.
-1) Для начала работы я создал объект Point, добавил ему RigidBody и Sphere Collider, чтобы он был одних размером со сферой 
-![image](https://user-images.githubusercontent.com/94520383/192101776-66f290d4-be8a-4bad-952b-e1ec34e41a37.png)
-2) Далее я создал скрипт, для того чтобы сфера могла разлетаться и проверил это на маленьких сферах
-```py
-public class PointBoom : MonoBehaviour
-{
-    // Start is called before the first frame update
-    public float radius = 0.5f;
-
-    public float force = 10.0f;
-
-    void Start()
-    {
-        Vector3 boomPosition = transform.position;
-        Collider[] colliders = Physics.OverlapSphere(boomPosition, radius);
-        foreach (Collider hit in colliders)
-        {
-            Rigidbody rb = GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                rb.AddExplosionForce(force, boomPosition, radius, 3.0f);
-            }
-        }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-}
-```
-![image](https://user-images.githubusercontent.com/94520383/192102623-548221b4-05f6-4ea8-8a02-3d51762a00ab.png)
-3) Далее я прописал уже для разрушения большой сферы и добавил Plane уже созданные прифабы Point и SpawnSphere
-```py
-public class DestroyObject : MonoBehaviour
-{
-    // Start is called before the first frame update
-    public float radius = 0.5f;
-    public float force = 10.0f;
-    public GameObject prefabBoomPoint;
-    public GameObject prefabBoomSphere;
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    private void OnCollisionEnter(Collision other)
-    {
-        if (other.gameObject.name == "Sphere")
-        {
-            Destroy(other.gameObject);
-            Vector3 boomPosition = other.gameObject.transform.position;
-            Instantiate(prefabBoomPoint, other.gameObject.transform.position, other.gameObject.transform.rotation);
-            Instantiate(prefabBoomSphere, other.gameObject.transform.position, other.gameObject.transform.rotation);
-            Collider[] colliders = Physics.OverlapSphere(boomPosition, radius);
-            foreach (Collider hit in colliders)
-            {
-                Rigidbody rb = GetComponent<Rigidbody>();
-                if (rb != null)
-                {
-                    rb.AddExplosionForce(force, boomPosition, radius, 3.0f);
-                }
-            }
-        }
-    }
-}
-```
-![image](https://user-images.githubusercontent.com/94520383/192103259-7e4c283b-167a-4462-96a4-aaa15de5d5d3.png)
+1) Для начала работы я добавил в свой проект input field и кнопку.
+![image](https://user-images.githubusercontent.com/94520383/192143670-2a602c8a-bf91-4ad0-bb51-9cbfad8ca9fb.png)
 
 ## Выводы
 В данной лабораторной работе, я научился, реализовывать на сцене генерацию n кубиков и ознакомился с основными функциями взаимодействием с объектами внутри редактора.

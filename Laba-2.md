@@ -53,7 +53,6 @@
 ![image](https://user-images.githubusercontent.com/94520383/196050772-4605e8da-c44c-4473-9f89-3b0e075c63f5.png)
 5) И поменял раскладку в OpenXR 
 ![image](https://user-images.githubusercontent.com/94520383/196050822-048b31d8-608b-4a11-828e-14777329e248.png)
-![image](https://user-images.githubusercontent.com/94520383/191992226-62503bb6-995b-4ce4-aba8-95b1c786e9c3.png)
 6) Добавил кубу симуляцию физики, при это куб не должен проваливаться под Plane
 ![image](https://user-images.githubusercontent.com/94520383/191992382-449c5e5e-7640-458f-bc4f-4634cadb4ef5.png)
 7) После этого я, написал скрипт, который будет выводить в консоль сообщение о том, что объект Sphere столкнулся с объектом Cube

@@ -48,8 +48,11 @@
 ![image](https://user-images.githubusercontent.com/94520383/196029243-2fdc42f0-9890-41bc-a6f3-813b70d608ed.png)
 3) Для дальйнешей работы установил XR Plugin Management
 ![image](https://user-images.githubusercontent.com/94520383/191991981-f68b59d7-2f30-4e13-a219-c5be8be39b38.pn
-4) И затем настроил его как триггер как показано в скриншоте до этого 
-5) После я перекрасил объект куб в красный цвет
+4)Затем подключил для управление OpenXR и Oculuc
+![image](https://user-images.githubusercontent.com/94520383/196050764-4cc929a2-6e74-48a3-8982-1f19f372b6db.png)
+![image](https://user-images.githubusercontent.com/94520383/196050772-4605e8da-c44c-4473-9f89-3b0e075c63f5.png)
+5) И поменял раскладку в OpenXR 
+![image](https://user-images.githubusercontent.com/94520383/196050822-048b31d8-608b-4a11-828e-14777329e248.png)
 ![image](https://user-images.githubusercontent.com/94520383/191992226-62503bb6-995b-4ce4-aba8-95b1c786e9c3.png)
 6) Добавил кубу симуляцию физики, при это куб не должен проваливаться под Plane
 ![image](https://user-images.githubusercontent.com/94520383/191992382-449c5e5e-7640-458f-bc4f-4634cadb4ef5.png)
